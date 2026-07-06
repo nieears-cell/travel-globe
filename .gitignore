@@ -1,0 +1,23 @@
+# build artifacts (docs/ is the published build; root build is local-only)
+Travel_Globe.html
+Travel_Globe_V2_frozen.html
+
+# regenerable assets (python gen_demo50.py)
+demo_photos/
+
+# python
+__pycache__/
+*.pyc
+
+# local dev/verify tooling & logs
+*.cjs
+*.cmd
+order_*.txt
+closing_log.txt
+v3_log.txt
+v2_*.png
+v3_*.png
+verify_*.png
+*profile*/
+v3_review/
+local-notes/

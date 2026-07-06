@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rules-engine-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Golden cases (15) for the deterministic rules engine
+        run: node persona-core/test_golden.js
+      - name: Monte-Carlo distribution gate (20,000 runs, every archetype >= 5%)
+        run: node persona-core/sim_distribution.js
+
+  build-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - name: Full single-file build (auto-generates demo photos)
+        run: python build_globe.py
+      - name: Verify outputs exist and are within size budget
+        run: |
+          python - <<'PY'
+          import os, sys
+          checks = {
+              "Travel_Globe.html": 15 * 1024 * 1024,
+              "docs/index.html": 4 * 1024 * 1024,
+              "docs/album.html": 15 * 1024 * 1024,
+              "docs/create.html": 64 * 1024,
+              "docs/persona-core/city_coords.json": 64 * 1024,
+          }
+          bad = []
+          for path, limit in checks.items():
+              if not os.path.exists(path):
+                  bad.append(f"missing: {path}")
+              elif os.path.getsize(path) > limit:
+                  bad.append(f"oversize: {path} ({os.path.getsize(path)} > {limit})")
+          for b in bad:
+              print("::error::" + b)
+          sys.exit(1 if bad else 0)
+          PY
