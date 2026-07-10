@@ -37,9 +37,17 @@
     color:#cdbf9d; cursor:pointer; font-size:14px; min-height:38px; display:inline-flex; align-items:center; }
   .home.on{ background:rgba(196,150,76,.18); border-color:var(--gold2); color:var(--gold); font-weight:600; }
   .styles{ display:flex; gap:10px; }
-  .style{ flex:1; padding:16px 12px; border-radius:14px; border:1px solid var(--line); background:var(--card);
-    color:#cdbf9d; cursor:pointer; text-align:center; font-size:15px; transition:.12s; }
+  .style{ flex:1; padding:0; border-radius:14px; border:1px solid var(--line); overflow:hidden;
+    color:#cdbf9d; cursor:pointer; text-align:center; font-size:15px; transition:.12s; background:var(--card); }
   .style.on{ border-color:var(--gold2); color:var(--ink); box-shadow:0 0 0 1px var(--gold2) inset; }
+  .style .swatch{ height:56px; position:relative; }
+  .style[data-theme="vintage"] .swatch{ background:
+    radial-gradient(140% 110% at 50% 120%, #b98d4f 0%, #8a6234 44%, #3a2b18 78%, #191209 100%); }
+  .style[data-theme="vintage"] .swatch::after{ content:'✦'; position:absolute; right:10px; top:8px; color:rgba(240,225,185,.85); font-size:13px; }
+  .style[data-theme="night"] .swatch{ background:
+    radial-gradient(130% 120% at 50% 125%, #1c4d8f 0%, #0d2a55 46%, #051228 76%, #01050e 100%); }
+  .style[data-theme="night"] .swatch::after{ content:'☾'; position:absolute; right:10px; top:6px; color:rgba(150,215,255,.9); font-size:14px; }
+  .style .lbl{ padding:11px 12px 13px; }
   .style small{ display:block; color:var(--mut); font-size:12px; margin-top:4px; }
   .gobar{ position:fixed; left:0; right:0; bottom:0; padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));
     background:linear-gradient(0deg, var(--bg) 70%, transparent); max-width:600px; margin:0 auto; }
@@ -63,8 +71,8 @@
 
 <h2>③ 选个风格</h2>
 <div class="styles">
-  <div class="style on" data-theme="vintage">复古航海图<small>羊皮纸 · 古星图 · 帆船</small></div>
-  <div class="style" data-theme="night">写实夜景<small>真实晨昏线 · 城市灯</small></div>
+  <div class="style on" data-theme="vintage"><div class="swatch"></div><div class="lbl">复古航海图<small>羊皮纸 · 古星图 · 帆船</small></div></div>
+  <div class="style" data-theme="night"><div class="swatch"></div><div class="lbl">写实夜景<small>真实晨昏线 · 城市灯</small></div></div>
 </div>
 
 <div class="gobar">

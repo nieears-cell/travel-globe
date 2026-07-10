@@ -81,6 +81,20 @@ EXT_CITIES: Dict[str, Tuple[float, float, str]] = {
     "库斯科": (-13.53, -71.97, "秘鲁"), "悉尼": (-33.87, 151.21, "澳大利亚"), "墨尔本": (-37.81, 144.96, "澳大利亚"),
     "奥克兰": (-36.85, 174.76, "新西兰"), "皇后镇": (-45.03, 168.66, "新西兰"), "开普敦": (-33.92, 18.42, "南非"),
     "马拉喀什": (31.63, -7.99, "摩洛哥"), "内罗毕": (-1.29, 36.82, "肯尼亚"),
+    # 国内热门/常见目的地补充(cities.json 之外)
+    "阿勒泰": (47.85, 88.14, "中国"), "伊宁": (43.92, 81.28, "中国"), "喀什": (39.47, 75.99, "中国"),
+    "乌鲁木齐": (43.83, 87.62, "中国"), "景德镇": (29.27, 117.18, "中国"), "恩施": (30.27, 109.49, "中国"),
+    "桂林": (25.27, 110.29, "中国"), "西双版纳": (22.01, 100.80, "中国"), "北海": (21.48, 109.12, "中国"),
+    "延吉": (42.90, 129.51, "中国"), "淄博": (36.81, 118.05, "中国"), "天水": (34.58, 105.72, "中国"),
+    "长白山": (42.02, 128.06, "中国"), "舟山": (29.99, 122.21, "中国"), "汕头": (23.35, 116.68, "中国"),
+    "银川": (38.49, 106.23, "中国"), "西宁": (36.62, 101.78, "中国"), "兰州": (36.06, 103.83, "中国"),
+    "太原": (37.87, 112.55, "中国"), "开封": (34.80, 114.31, "中国"), "大同": (40.08, 113.30, "中国"),
+    "色达": (32.27, 100.33, "中国"), "茶卡盐湖": (36.70, 99.09, "中国"), "万宁": (18.80, 110.40, "中国"),
+    "陵水": (18.51, 110.04, "中国"), "佛山": (23.02, 113.12, "中国"), "绍兴": (30.00, 120.58, "中国"),
+    "温州": (28.00, 120.70, "中国"), "林芝": (29.65, 94.36, "中国"), "日喀则": (29.27, 88.88, "中国"),
+    "漠河": (52.97, 122.54, "中国"), "满洲里": (49.60, 117.38, "中国"), "丹东": (40.13, 124.38, "中国"),
+    "烟台": (37.46, 121.45, "中国"), "大连": (38.91, 121.61, "中国"), "秦皇岛": (39.94, 119.60, "中国"),
+    "承德": (40.95, 117.94, "中国"),
 }
 
 
@@ -103,6 +117,14 @@ def build_city_coords() -> Dict[str, Dict[str, object]]:
             coords[nm]["country"] = country
         else:
             coords[nm] = {"lat": lat, "lon": lon, "country": country}
+    # 显示规范化:region 桶 → 体面的地区名
+    special = {"香港": "中国香港", "澳门": "中国澳门", "台北": "中国台湾", "高雄": "中国台湾",
+               "垦丁": "中国台湾", "花莲": "中国台湾", "台南": "中国台湾", "台中": "中国台湾"}
+    for nm, c in coords.items():
+        if nm in special:
+            c["country"] = special[nm]
+        elif c.get("country") == "中国大陆":
+            c["country"] = "中国"
     return coords
 
 
@@ -680,7 +702,11 @@ HTML = r"""<!doctype html>
 </style>
 </head>
 <body class="vintage">
-<div id="boot" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#071017;color:#cdbf9d;font:15px/1.6 Georgia,serif;z-index:99;letter-spacing:.2em;">正在展开你的地球…</div>
+<div id="boot" style="position:fixed;inset:0;display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center;background:#0a0d12;color:#cdbf9d;font:15px/1.6 Georgia,serif;z-index:99;letter-spacing:.22em;">
+<style>@keyframes bootspin{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes bootbreathe{0%,100%{opacity:.45}50%{opacity:1}}</style>
+<div style="width:52px;height:52px;border-radius:50%;border:1px solid rgba(214,169,87,.4);display:flex;align-items:center;justify-content:center;animation:bootspin 6s linear infinite;"><span style="color:#d6a957;font-size:22px;">✦</span></div>
+<div style="animation:bootbreathe 2.2s ease-in-out infinite;">正在展开你的地球…</div>
+</div>
 <canvas id="gl"></canvas>
 <div id="topbar">
   <div class="brand">Travel Globe<small id="countLabel"></small></div>
@@ -1218,6 +1244,7 @@ window.TravelGlobeTest = {
     frame(performance.now());
     return true;
   },
+  exportJpeg: function(q){ return buildExportCanvas().toDataURL('image/jpeg', q || .82); },
   exportProbe: function(){
     if (intro.active) completeIntro(false);
     var o = buildExportCanvas();
@@ -1246,50 +1273,105 @@ function totalMileage(){
 function commaNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function hex6(c){ return '#' + ('000000' + c.toString(16)).slice(-6); }
 
-// 竖屏分享图(1080×1920):地球 + 旅行身份卡(本命城/城数/国数/里程/水印)
+// 航海称号:按去过的城市数,给一个愿意认领的身份(分享卡的社交货币核心)
+function voyageRank(n){
+  if (n >= 26) return '传奇航海家';
+  if (n >= 16) return '大航海家';
+  if (n >= 9)  return '环球旅人';
+  if (n >= 4)  return '远航者';
+  return '启程者';
+}
+
+// 竖屏分享图(1080×1920):装饰框 + 地球 + 旅行身份卡(称号/本命城/城数国数/里程·绕赤道/制图日期)
 function buildExportCanvas(){
   if (intro.active) completeIntro(false);
   rotX = targetRotX; rotY = targetRotY; radius = targetRadius;
   frame(performance.now());
   var serif = (currentTheme === 'vintage');
   var bgHex = hex6(THEMES[currentTheme].bg);
-  var ink = currentTheme === 'night' ? '#dff1ff' : (currentTheme === 'data' ? '#a7f0e6' : '#ecdcae');
+  var ink = currentTheme === 'night' ? '#dff1ff' : (currentTheme === 'data' ? '#a7f0e6' : '#f0e3c0');
   var gold = currentTheme === 'night' ? '#ffe08a' : (currentTheme === 'data' ? '#7ef7d4' : '#d6a957');
-  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(220,200,160,.68)');
+  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(222,203,164,.7)');
+  var frameCol = currentTheme === 'night' ? 'rgba(122,216,255,.42)' : (currentTheme === 'data' ? 'rgba(55,214,255,.42)' : 'rgba(214,169,87,.5)');
+  var zhFont = serif ? '"Microsoft YaHei", Georgia, serif' : '"Microsoft YaHei", "Segoe UI", Arial';
   var W = 1080, H = 1920;
   var o = document.createElement('canvas'); o.width = W; o.height = H;
   var ctx = o.getContext('2d');
   ctx.fillStyle = bgHex; ctx.fillRect(0, 0, W, H);
+  // 轻微暗角,聚焦中心
+  var vg = ctx.createRadialGradient(W/2, H/2, H*.30, W/2, H/2, H*.72);
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.34)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  // 地球:内嵌构图(不顶到边),上下渐隐融入底色
   var gl = document.getElementById('gl');
   var glw = gl.width || 1, glh = gl.height || 1;
   var side = Math.min(glw, glh);
   var sx = (glw - side) / 2, sy = (glh - side) / 2;
-  var gTop = 196;
-  try { ctx.drawImage(gl, sx, sy, side, side, 0, gTop, W, W); } catch (e) {}
-  var fade = ctx.createLinearGradient(0, gTop + W - 360, 0, gTop + W + 40);
+  var gX = 54, gW = W - 108, gTop = 258;
+  try { ctx.drawImage(gl, sx, sy, side, side, gX, gTop, gW, gW); } catch (e) {}
+  var fade = ctx.createLinearGradient(0, gTop + gW - 300, 0, gTop + gW + 30);
   fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, bgHex);
-  ctx.fillStyle = fade; ctx.fillRect(0, gTop + W - 360, W, 400);
-  var topf = ctx.createLinearGradient(0, gTop, 0, gTop + 170);
+  ctx.fillStyle = fade; ctx.fillRect(gX, gTop + gW - 300, gW, 340);
+  var topf = ctx.createLinearGradient(0, gTop, 0, gTop + 150);
   topf.addColorStop(0, bgHex); topf.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = topf; ctx.fillRect(0, gTop, W, 170);
+  ctx.fillStyle = topf; ctx.fillRect(gX, gTop, gW, 150);
+  // 装饰细框(双线 + 角饰),盖在最外圈
+  ctx.strokeStyle = frameCol; ctx.lineWidth = 3;
+  ctx.strokeRect(36, 36, W - 72, H - 72);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(50, 50, W - 100, H - 100);
+  ctx.lineWidth = 3;
+  [[36,36,1,1],[W-36,36,-1,1],[36,H-36,1,-1],[W-36,H-36,-1,-1]].forEach(function(c){
+    ctx.beginPath();
+    ctx.moveTo(c[0] + 34*c[2], c[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(c[0], c[1] + 34*c[3]);
+    ctx.stroke();
+  });
   ctx.textAlign = 'center';
+  // 标题 + 两侧饰线
   ctx.fillStyle = ink;
-  ctx.font = serif ? '700 60px Georgia, serif' : '700 58px "Segoe UI", Arial';
-  ctx.fillText(PAGE_TITLE || '我的旅行地球', W/2, 122);
+  ctx.font = '700 64px ' + zhFont;
+  var titleTxt = PAGE_TITLE || '我的旅行地球';
+  ctx.fillText(titleTxt, W/2, 148);
+  var tw = ctx.measureText(titleTxt).width;
+  ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(W/2 - tw/2 - 130, 128); ctx.lineTo(W/2 - tw/2 - 34, 128); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2 + tw/2 + 34, 128);  ctx.lineTo(W/2 + tw/2 + 130, 128); ctx.stroke();
+  // 称号(社交货币):细框小徽章
+  var rank = voyageRank(ITEMS.length);
+  ctx.font = '600 36px ' + zhFont;
+  var rtxt = '「 ' + rank + ' 」';
   ctx.fillStyle = gold;
-  ctx.font = '600 38px ' + (serif ? 'Georgia, serif' : '"Segoe UI", Arial');
-  if (HOME_PORT) ctx.fillText('★ 本命城市 · ' + HOME_PORT.name, W/2, 1502);
+  ctx.fillText(rtxt, W/2, 218);
+  // ★ 本命城市
+  ctx.fillStyle = gold;
+  ctx.font = '600 40px ' + zhFont;
+  if (HOME_PORT) ctx.fillText('★ 本命城市 · ' + HOME_PORT.name, W/2, 1392);
+  // 主数字
   ctx.fillStyle = ink;
-  ctx.font = '700 78px ' + (serif ? 'Georgia, serif' : '"Segoe UI", Arial');
-  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1612);
+  ctx.font = '700 88px ' + zhFont;
+  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1516);
+  // 里程 + 绕赤道换算
+  var m = totalMileage();
+  var laps = m / 40075;
+  var mtxt = '总里程约 ' + commaNum(m) + ' km' + (laps >= 0.1 ? ' · 约绕赤道 ' + laps.toFixed(1) + ' 圈' : '');
   ctx.fillStyle = muted;
-  ctx.font = '500 44px "Segoe UI", Arial';
-  ctx.fillText('总里程约 ' + commaNum(totalMileage()) + ' km', W/2, 1686);
-  ctx.strokeStyle = gold; ctx.globalAlpha = .5; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(W/2 - 90, 1740); ctx.lineTo(W/2 + 90, 1740); ctx.stroke(); ctx.globalAlpha = 1;
+  ctx.font = '500 40px ' + zhFont;
+  ctx.fillText(mtxt, W/2, 1594);
+  // 分隔饰线 ── ✦ ──
+  ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(W/2 - 150, 1668); ctx.lineTo(W/2 - 26, 1668); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2 + 26, 1668);  ctx.lineTo(W/2 + 150, 1668); ctx.stroke();
+  ctx.fillStyle = gold; ctx.font = '24px ' + zhFont;
+  ctx.fillText('✦', W/2, 1677);
+  // 制图日期(真实感)
+  var now = new Date();
+  var dtxt = '制图 · ' + now.getFullYear() + '.' + ('0' + (now.getMonth() + 1)).slice(-2) + '.' + ('0' + now.getDate()).slice(-2);
+  ctx.fillStyle = muted; ctx.font = '400 30px ' + zhFont;
+  ctx.fillText(dtxt, W/2, 1732);
+  // 水印(+账号钩子)
   ctx.fillStyle = muted;
-  ctx.font = '500 30px "Segoe UI", Arial';
-  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1818);
+  ctx.font = '500 32px ' + zhFont;
+  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1828);
   return o;
 }
 function exportGlobeImage(){
@@ -2274,6 +2356,17 @@ function paintNameplate(group){
   if (currentTheme === 'vintage') {
     ctx.strokeStyle = 'rgba(100,58,35,.3)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(100, 422); ctx.lineTo(284, 422); ctx.stroke();
+    // 朱印:本命城=「母港」,其余=「行迹」(文人航海图气质)
+    ctx.save();
+    ctx.translate(322, 428); ctx.rotate(-.06);
+    ctx.fillStyle = 'rgba(172,48,36,.8)';
+    roundRect(ctx, -24, -24, 48, 48, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(246,238,220,.94)';
+    ctx.font = '700 19px "Microsoft YaHei", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(isHome ? '母港' : '行迹', 0, 7);
+    ctx.restore();
+    ctx.textAlign = 'center';
   }
   var tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
