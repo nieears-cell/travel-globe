@@ -29,6 +29,7 @@
   .chip:active{ transform:scale(.96); }
   .chip.on{ background:var(--gold2); color:#1a140a; border-color:var(--gold2); font-weight:600; }
   .chip.add{ border-style:dashed; color:var(--gold); }
+  .chip.wish{ border-style:dashed; border-color:var(--gold2); color:var(--gold); background:rgba(196,150,76,.08); }
   .chip .x{ opacity:.7; font-weight:700; }
   .selbar{ background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:4px; }
   .selbar .empty{ color:var(--mut); font-size:14px; }
@@ -61,7 +62,7 @@
 <h1>我的旅行地球</h1>
 <div class="sub">钉下你去过的城市，生成一张只属于你的旅行版图 —— 可以保存、发出去。</div>
 
-<h2>① 选择你去过的城市 <span class="n" id="selcount"></span></h2>
+<h2>① 选择城市:点一下=去过,再点=想去 <span class="n" id="selcount"></span></h2>
 <div class="selbar" id="selbar"><span class="empty">还没选 · 在下面点选或搜索</span></div>
 <input class="search" id="search" placeholder="🔍 搜城市（中文名，国内外都行）" autocomplete="off">
 <div class="chips" id="chips"></div>
@@ -81,7 +82,7 @@
 </div>
 
 <script>
-var COORDS = {}, NAMES = [], selected = [], homeCity = null, theme = 'vintage';
+var COORDS = {}, NAMES = [], selected = [], wish = [], homeCity = null, theme = 'vintage';
 var POPULAR = ['上海','北京','成都','重庆','西安','杭州','广州','深圳','南京','厦门','长沙','青岛','大理','丽江','三亚','拉萨','苏州','武汉','香港','台北',
   '东京','大阪','京都','首尔','曼谷','清迈','新加坡','巴厘岛','吉隆坡','迪拜','巴黎','伦敦','罗马','巴塞罗那','阿姆斯特丹','纽约','洛杉矶','旧金山','悉尼','墨尔本'];
 
@@ -89,10 +90,14 @@ fetch('persona-core/city_coords.json').then(function(r){ return r.json(); }).the
   COORDS = j; NAMES = Object.keys(j);
   // 预载优先级:URL ?cities=(分享链接/换设备,localStorage 可能为空)→ localStorage(老用户回访)
   try {
-    var q = new URLSearchParams(location.search).get('cities');
+    var qs = new URLSearchParams(location.search);
+    var q = qs.get('cities');
     var prev = q ? q.split(',').map(function(s){ return s.trim(); }).filter(Boolean)
                  : JSON.parse(localStorage.getItem('myGlobeCities') || '[]');
+    var prevW = q ? (qs.get('wish') || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean)
+                  : JSON.parse(localStorage.getItem('myGlobeWish') || '[]');
     if (prev && prev.length){ selected = prev.slice(); homeCity = prev[0]; }
+    if (prevW && prevW.length){ wish = prevW.filter(function(n){ return selected.indexOf(n) < 0; }); }
   } catch(e){}
   renderChips(''); renderSel(); renderHome(); updateGo();
 });
@@ -105,8 +110,8 @@ function renderChips(filter){
   else list = POPULAR.filter(function(n){ return COORDS[n]; });
   list.forEach(function(n){
     var el = document.createElement('span');
-    el.className = 'chip' + (selected.indexOf(n) >= 0 ? ' on' : '');
-    el.textContent = n;
+    el.className = 'chip' + (selected.indexOf(n) >= 0 ? ' on' : (wish.indexOf(n) >= 0 ? ' wish' : ''));
+    el.textContent = (wish.indexOf(n) >= 0 ? '☆ ' : '') + n;
     el.onclick = function(){ toggle(n); };
     box.appendChild(el);
   });
@@ -120,25 +125,41 @@ function renderChips(filter){
   }
 }
 function toggle(n){
-  var i = selected.indexOf(n);
-  if (i >= 0){ selected.splice(i,1); if (homeCity===n) homeCity = selected[0]||null; }
-  else { selected.push(n); if (!homeCity) homeCity = n; }
+  // 三态循环:未选 → 去过 → 想去 → 移除
+  var i = selected.indexOf(n), w = wish.indexOf(n);
+  if (i >= 0){
+    selected.splice(i, 1); wish.push(n);
+    if (homeCity === n) homeCity = selected[0] || null;
+  } else if (w >= 0){
+    wish.splice(w, 1);
+  } else {
+    selected.push(n); if (!homeCity) homeCity = n;
+  }
   renderChips(document.getElementById('search').value); renderSel(); renderHome(); updateGo();
 }
 function renderSel(){
   var box = document.getElementById('selbar');
   document.getElementById('selcount').textContent = selected.length ? ('已选 '+selected.length) : '';
-  if (!selected.length){ box.innerHTML = '<span class="empty">还没选 · 在下面点选或搜索</span>'; return; }
+  if (!selected.length && !wish.length){ box.innerHTML = '<span class="empty">还没选 · 在下面点选或搜索(点一下=去过,再点=想去)</span>'; return; }
   box.innerHTML = '';
   var wrap = document.createElement('div'); wrap.className = 'chips';
-  selected.forEach(function(n){
-    var el = document.createElement('span'); el.className = 'chip on';
-    el.textContent = n + ' ';                                  // textContent 防注入(城市名可为任意用户输入)
+  function chipOf(n, isWish){
+    var el = document.createElement('span'); el.className = isWish ? 'chip wish' : 'chip on';
+    el.textContent = (isWish ? '☆ ' : '') + n + ' ';           // textContent 防注入(城市名可为任意用户输入)
     var x = document.createElement('span'); x.className = 'x'; x.textContent = '×';
+    x.onclick = function(ev){                                   // × 直接移除(跳过三态)
+      ev.stopPropagation();
+      var arr = isWish ? wish : selected;
+      var i = arr.indexOf(n); if (i >= 0) arr.splice(i, 1);
+      if (!isWish && homeCity === n) homeCity = selected[0] || null;
+      renderChips(document.getElementById('search').value); renderSel(); renderHome(); updateGo();
+    };
     el.appendChild(x);
     el.onclick = function(){ toggle(n); };
     wrap.appendChild(el);
-  });
+  }
+  selected.forEach(function(n){ chipOf(n, false); });
+  wish.forEach(function(n){ chipOf(n, true); });
   box.appendChild(wrap);
 }
 function renderHome(){
@@ -155,8 +176,9 @@ function renderHome(){
 function updateGo(){
   var go = document.getElementById('go'), hint = document.getElementById('hint');
   go.disabled = selected.length < 1;
-  hint.textContent = selected.length < 1 ? '至少选 1 座城市'
-    : (selected.length < 3 ? ('已选 '+selected.length+' 座 · 再多选几座地球会更好看') : ('已选 '+selected.length+' 座 · 本命城市：'+(homeCity||'—')));
+  var wtxt = wish.length ? (' · 心愿 ' + wish.length) : '';
+  hint.textContent = selected.length < 1 ? '至少选 1 座去过的城市(点一下=去过,再点=想去)'
+    : (selected.length < 3 ? ('已选 '+selected.length+' 座'+wtxt+' · 再多选几座地球会更好看') : ('已选 '+selected.length+' 座'+wtxt+' · 本命城市：'+(homeCity||'—')));
 }
 document.getElementById('search').oninput = function(){ renderChips(this.value); };
 document.querySelectorAll('.style').forEach(function(s){
@@ -168,13 +190,17 @@ document.querySelectorAll('.style').forEach(function(s){
 document.getElementById('go').onclick = function(){
   if (!selected.length) return;
   // 城市库外的自定义名(地球端无坐标)会被静默跳过——生成前如实告知,别让人疑惑"少了一座城"
-  var unknown = selected.filter(function(n){ return !COORDS[n]; });
+  var unknown = selected.concat(wish).filter(function(n){ return !COORDS[n]; });
   if (unknown.length){
     var ok = window.confirm('「' + unknown.join('、') + '」暂不在城市库里,这次不会出现在地球上。\n仍然生成吗?');
     if (!ok) return;
   }
-  try { localStorage.setItem('myGlobeCities', JSON.stringify(selected)); } catch(e){}
+  try {
+    localStorage.setItem('myGlobeCities', JSON.stringify(selected));
+    localStorage.setItem('myGlobeWish', JSON.stringify(wish));
+  } catch(e){}
   var u = 'index.html?cities=' + encodeURIComponent(selected.join(','))
+    + (wish.length ? '&wish=' + encodeURIComponent(wish.join(',')) : '')
     + '&home=' + encodeURIComponent(homeCity || selected[0])
     + '&theme=' + theme
     + '&title=' + encodeURIComponent('我的旅行地球');
