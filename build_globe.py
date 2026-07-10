@@ -98,6 +98,25 @@ EXT_CITIES: Dict[str, Tuple[float, float, str]] = {
 }
 
 
+def build_city_tags() -> Dict[str, Dict[str, object]]:
+    """城市名 -> {tags, heat, travelCost, region}(人格判定用,仅 cities.json 精标城市有)。"""
+    tags: Dict[str, Dict[str, object]] = {}
+    try:
+        data = json.loads(PERSONA_CITIES.read_text(encoding="utf-8"))
+        for c in data.get("cities", []):
+            nm = c.get("name")
+            if nm:
+                tags[nm] = {
+                    "tags": c.get("tags", []),
+                    "heat": c.get("heat", ""),
+                    "travelCost": c.get("travelCost", ""),
+                    "region": c.get("region", ""),
+                }
+    except Exception:
+        pass
+    return tags
+
+
 def build_city_coords() -> Dict[str, Dict[str, object]]:
     """城市名 -> {lat, lon, country}。persona-core/cities.json 优先,再补 demo 世界城与扩展表。"""
     coords: Dict[str, Dict[str, object]] = {}
@@ -754,6 +773,7 @@ body.tour #tourBrand{display:block;}
 <script>
 var DEMO_ITEMS = @@ITEMS@@;
 var CITY_COORDS = @@CITY_COORDS@@;
+var CITY_TAGS = @@CITY_TAGS@@;
 var FORCE_DEMO = @@FORCE_DEMO@@; // album 演示页锁定内置数据,不被 localStorage/URL 劫持
 (function(){ var b = document.getElementById('boot'); if (b) b.parentNode.removeChild(b); })();
 // 把城市名列表 join 成地球能吃的 item(无照片,运行时定位)
@@ -1273,16 +1293,119 @@ function totalMileage(){
 function commaNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function hex6(c){ return '#' + ('000000' + c.toString(16)).slice(-6); }
 
-// 航海称号:按去过的城市数,给一个愿意认领的身份(分享卡的社交货币核心)
+// 航海称号五阶 + 晋升进度(等级钩子:差 X 城晋升)
+var RANKS = [[1,'启程者'],[4,'远航者'],[9,'环球旅人'],[16,'大航海家'],[26,'传奇航海家']];
 function voyageRank(n){
-  if (n >= 26) return '传奇航海家';
-  if (n >= 16) return '大航海家';
-  if (n >= 9)  return '环球旅人';
-  if (n >= 4)  return '远航者';
-  return '启程者';
+  var r = RANKS[0][1];
+  for (var i = 0; i < RANKS.length; i++) if (n >= RANKS[i][0]) r = RANKS[i][1];
+  return r;
+}
+function rankInfo(n){
+  var idx = 0;
+  for (var i = 0; i < RANKS.length; i++) if (n >= RANKS[i][0]) idx = i;
+  var next = idx < RANKS.length - 1 ? { name: RANKS[idx+1][1], need: RANKS[idx+1][0] - n } : null;
+  return { name: RANKS[idx][1], idx: idx, next: next };
 }
 
-// 竖屏分享图(1080×1920):装饰框 + 地球 + 旅行身份卡(称号/本命城/城数国数/里程·绕赤道/制图日期)
+// 超越百分比(预设分布,估算口径,卡上带 * 注)
+function travelPercentile(n){
+  var t = [[1,30],[2,42],[3,55],[5,68],[8,78],[12,86],[16,91],[20,94],[25,96],[30,97],[40,99]];
+  var p = t[0][1];
+  for (var i = 0; i < t.length; i++){
+    if (n >= t[i][0]) p = t[i][1];
+    else break;
+  }
+  return p;
+}
+
+// 最远航程:距本命城市最远的一座城
+function farthestVoyage(){
+  if (!HOME_PORT || !ITEMS.length) return null;
+  var best = null, bd = 0;
+  ITEMS.forEach(function(it){
+    if (it.place === HOME_PORT.name) return;
+    var d = haversine(HOME_PORT, it);
+    if (d > bd){ bd = d; best = it; }
+  });
+  return best ? { name: best.place, km: Math.round(bd) } : null;
+}
+
+// 旅行人格(persona-core 判定引擎的纯城市信号版:无答题,权重同源)
+function personaFromCities(){
+  var tagged = [];
+  ITEMS.forEach(function(it){ var t = CITY_TAGS[it.place]; if (t) tagged.push(t); });
+  var n = tagged.length;
+  if (n < 3) return null;
+  function ratio(pred){ return tagged.filter(pred).length / n; }
+  var tagR = function(tag){ return ratio(function(c){ return (c.tags || []).indexOf(tag) >= 0; }); };
+  var heatR = function(h){ return ratio(function(c){ return c.heat === h; }); };
+  var costR = function(t){ return ratio(function(c){ return c.travelCost === t; }); };
+  var spread = {}; tagged.forEach(function(c){ if (c.region) spread[c.region] = 1; });
+  var rs = Object.keys(spread).length;
+  var sc = {};
+  sc['松弛感本人']     = 1.0 * tagR('度假松弛') + .8 * tagR('海岛海滨');
+  sc['特种兵旅人']     = .5 * Math.min(1, n / 6) + .5 * Math.min(1, (rs - 1) / 3);
+  sc['citywalk 漫游家'] = 1.0 * tagR('大都市');
+  sc['反向旅游选手']   = 1.0 * tagR('小众秘境') + .8 * heatR('小众');
+  sc['老城散步派']     = 1.1 * tagR('古城人文');
+  sc['为了一口吃的']   = 1.2 * tagR('美食之都');
+  sc['出片型人格']     = 1.0 * tagR('出片打卡') + .5 * heatR('热门');
+  sc['周末治愈系']     = .9 * costR('周末友好') + .5 * tagR('自然山水') + .4 * tagR('度假松弛') + (n <= 3 ? .25 : 0);
+  var PRI = ['反向旅游选手','为了一口吃的','老城散步派','特种兵旅人','周末治愈系','citywalk 漫游家','出片型人格','松弛感本人'];
+  var best = null, bs = -1;
+  PRI.forEach(function(t){ if (sc[t] > bs + 1e-9){ bs = sc[t]; best = t; } });
+  return best;
+}
+
+// 纸纹噪点 pattern(128 离屏平铺,勿逐像素画全图)
+function makeNoisePattern(ctx, alpha){
+  var c = document.createElement('canvas'); c.width = 128; c.height = 128;
+  var x = c.getContext('2d');
+  var img = x.createImageData(128, 128);
+  for (var i = 0; i < img.data.length; i += 4){
+    var v = Math.floor(Math.random() * 255);
+    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v;
+    img.data[i+3] = Math.floor(alpha * (0.5 + Math.random() * 0.5));
+  }
+  x.putImageData(img, 0, 0);
+  return ctx.createPattern(c, 'repeat');
+}
+
+// 做旧圆章:双环 + 环形文字 + 中心文字,随机戳孔 + 微旋转
+function drawAgedSeal(ctx, cx, cy, r, ringText, line1, line2){
+  var c = document.createElement('canvas'); c.width = c.height = r * 2 + 20;
+  var x = c.getContext('2d');
+  var o = r + 10;
+  x.strokeStyle = '#b13a2a'; x.fillStyle = '#b13a2a';
+  x.lineWidth = 5; x.beginPath(); x.arc(o, o, r - 3, 0, Math.PI * 2); x.stroke();
+  x.lineWidth = 1.6; x.beginPath(); x.arc(o, o, r - 13, 0, Math.PI * 2); x.stroke();
+  x.font = '700 ' + Math.round(r * .17) + 'px "Microsoft YaHei", serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  var chars = ringText.split('');
+  var arc = Math.PI * 1.5, a0 = -Math.PI / 2 - arc / 2;
+  chars.forEach(function(ch, i){
+    var a = a0 + arc * (i + .5) / chars.length;
+    x.save(); x.translate(o + Math.sin(a) * (r - 26), o - Math.cos(a) * (r - 26));
+    x.rotate(a); x.fillText(ch, 0, 0); x.restore();
+  });
+  x.font = '700 ' + Math.round(r * .26) + 'px "Microsoft YaHei", serif';
+  x.fillText(line1, o, o - r * .10);
+  x.font = '600 ' + Math.round(r * .17) + 'px "Microsoft YaHei", serif';
+  x.fillText(line2, o, o + r * .24);
+  x.font = Math.round(r * .2) + 'px serif';
+  x.fillText('✦', o, o + r * .58);
+  x.globalCompositeOperation = 'destination-out';
+  for (var k = 0; k < 46; k++){
+    var aa = Math.random() * Math.PI * 2, rr = Math.random() * r;
+    x.beginPath(); x.arc(o + Math.cos(aa) * rr, o + Math.sin(aa) * rr, .8 + Math.random() * 2.6, 0, Math.PI * 2); x.fill();
+  }
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(-.07); ctx.globalAlpha = .88;
+  ctx.drawImage(c, -o, -o);
+  ctx.restore();
+}
+
+// 竖屏分享卡 v3(1080×1920):称号+晋升刻度 / 人格 / 地球 / 主数字 / 2×2 数据格 / 做旧印章 / 纸纹
 function buildExportCanvas(){
   if (intro.active) completeIntro(false);
   rotX = targetRotX; rotY = targetRotY; radius = targetRadius;
@@ -1291,23 +1414,22 @@ function buildExportCanvas(){
   var bgHex = hex6(THEMES[currentTheme].bg);
   var ink = currentTheme === 'night' ? '#dff1ff' : (currentTheme === 'data' ? '#a7f0e6' : '#f0e3c0');
   var gold = currentTheme === 'night' ? '#ffe08a' : (currentTheme === 'data' ? '#7ef7d4' : '#d6a957');
-  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(222,203,164,.7)');
+  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(222,203,164,.72)');
+  var faint = currentTheme === 'night' ? 'rgba(190,220,245,.45)' : (currentTheme === 'data' ? 'rgba(150,230,222,.45)' : 'rgba(222,203,164,.45)');
   var frameCol = currentTheme === 'night' ? 'rgba(122,216,255,.42)' : (currentTheme === 'data' ? 'rgba(55,214,255,.42)' : 'rgba(214,169,87,.5)');
-  var zhFont = serif ? '"Microsoft YaHei", Georgia, serif' : '"Microsoft YaHei", "Segoe UI", Arial';
+  var zhFont = '"Microsoft YaHei", ' + (serif ? 'Georgia, serif' : '"Segoe UI", Arial');
   var W = 1080, H = 1920;
   var o = document.createElement('canvas'); o.width = W; o.height = H;
   var ctx = o.getContext('2d');
   ctx.fillStyle = bgHex; ctx.fillRect(0, 0, W, H);
-  // 轻微暗角,聚焦中心
   var vg = ctx.createRadialGradient(W/2, H/2, H*.30, W/2, H/2, H*.72);
   vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.34)');
   ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
-  // 地球:内嵌构图(不顶到边),上下渐隐融入底色
   var gl = document.getElementById('gl');
   var glw = gl.width || 1, glh = gl.height || 1;
   var side = Math.min(glw, glh);
   var sx = (glw - side) / 2, sy = (glh - side) / 2;
-  var gX = 54, gW = W - 108, gTop = 258;
+  var gX = 54, gW = W - 108, gTop = 330;
   try { ctx.drawImage(gl, sx, sy, side, side, gX, gTop, gW, gW); } catch (e) {}
   var fade = ctx.createLinearGradient(0, gTop + gW - 300, 0, gTop + gW + 30);
   fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, bgHex);
@@ -1315,11 +1437,9 @@ function buildExportCanvas(){
   var topf = ctx.createLinearGradient(0, gTop, 0, gTop + 150);
   topf.addColorStop(0, bgHex); topf.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = topf; ctx.fillRect(gX, gTop, gW, 150);
-  // 装饰细框(双线 + 角饰),盖在最外圈
   ctx.strokeStyle = frameCol; ctx.lineWidth = 3;
   ctx.strokeRect(36, 36, W - 72, H - 72);
-  ctx.lineWidth = 1;
-  ctx.strokeRect(50, 50, W - 100, H - 100);
+  ctx.lineWidth = 1; ctx.strokeRect(50, 50, W - 100, H - 100);
   ctx.lineWidth = 3;
   [[36,36,1,1],[W-36,36,-1,1],[36,H-36,1,-1],[W-36,H-36,-1,-1]].forEach(function(c){
     ctx.beginPath();
@@ -1327,51 +1447,74 @@ function buildExportCanvas(){
     ctx.stroke();
   });
   ctx.textAlign = 'center';
-  // 标题 + 两侧饰线
   ctx.fillStyle = ink;
-  ctx.font = '700 64px ' + zhFont;
+  ctx.font = '700 58px ' + zhFont;
   var titleTxt = PAGE_TITLE || '我的旅行地球';
-  ctx.fillText(titleTxt, W/2, 148);
+  ctx.fillText(titleTxt, W/2, 132);
   var tw = ctx.measureText(titleTxt).width;
   ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(W/2 - tw/2 - 130, 128); ctx.lineTo(W/2 - tw/2 - 34, 128); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(W/2 + tw/2 + 34, 128);  ctx.lineTo(W/2 + tw/2 + 130, 128); ctx.stroke();
-  // 称号(社交货币):细框小徽章
-  var rank = voyageRank(ITEMS.length);
-  ctx.font = '600 36px ' + zhFont;
-  var rtxt = '「 ' + rank + ' 」';
-  ctx.fillStyle = gold;
-  ctx.fillText(rtxt, W/2, 218);
-  // ★ 本命城市
-  ctx.fillStyle = gold;
-  ctx.font = '600 40px ' + zhFont;
+  ctx.beginPath(); ctx.moveTo(W/2 - tw/2 - 120, 112); ctx.lineTo(W/2 - tw/2 - 30, 112); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2 + tw/2 + 30, 112);  ctx.lineTo(W/2 + tw/2 + 120, 112); ctx.stroke();
+  var ri = rankInfo(ITEMS.length);
+  ctx.fillStyle = gold; ctx.font = '700 42px ' + zhFont;
+  ctx.fillText('「 ' + ri.name + ' 」', W/2, 206);
+  var persona = personaFromCities();
+  if (persona){
+    ctx.fillStyle = muted; ctx.font = '500 28px ' + zhFont;
+    ctx.fillText('旅行人格 · ' + persona, W/2, 254);
+  }
+  var scY = persona ? 296 : 268;
+  var scW = 260, scX0 = W/2 - scW/2;
+  ctx.strokeStyle = faint; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(scX0, scY); ctx.lineTo(scX0 + scW, scY); ctx.stroke();
+  for (var d = 0; d < 5; d++){
+    var dx = scX0 + scW * d / 4;
+    ctx.save(); ctx.translate(dx, scY); ctx.rotate(Math.PI / 4);
+    if (d <= ri.idx){ ctx.fillStyle = gold; ctx.fillRect(-7, -7, 14, 14); }
+    else { ctx.strokeStyle = faint; ctx.lineWidth = 2; ctx.strokeRect(-7, -7, 14, 14); }
+    ctx.restore();
+  }
+  if (ri.next){
+    ctx.fillStyle = faint; ctx.font = '400 24px ' + zhFont;
+    ctx.fillText('再点亮 ' + ri.next.need + ' 城,晋升「' + ri.next.name + '」', W/2, scY + 42);
+  }
+  ctx.fillStyle = gold; ctx.font = '600 38px ' + zhFont;
   if (HOME_PORT) ctx.fillText('★ 本命城市 · ' + HOME_PORT.name, W/2, 1392);
-  // 主数字
-  ctx.fillStyle = ink;
-  ctx.font = '700 88px ' + zhFont;
-  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1516);
-  // 里程 + 绕赤道换算
-  var m = totalMileage();
-  var laps = m / 40075;
-  var mtxt = '总里程约 ' + commaNum(m) + ' km' + (laps >= 0.1 ? ' · 约绕赤道 ' + laps.toFixed(1) + ' 圈' : '');
-  ctx.fillStyle = muted;
-  ctx.font = '500 40px ' + zhFont;
-  ctx.fillText(mtxt, W/2, 1594);
-  // 分隔饰线 ── ✦ ──
-  ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(W/2 - 150, 1668); ctx.lineTo(W/2 - 26, 1668); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(W/2 + 26, 1668);  ctx.lineTo(W/2 + 150, 1668); ctx.stroke();
-  ctx.fillStyle = gold; ctx.font = '24px ' + zhFont;
-  ctx.fillText('✦', W/2, 1677);
-  // 制图日期(真实感)
+  ctx.fillStyle = ink; ctx.font = '700 86px ' + zhFont;
+  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1512);
+  var totalCities = Object.keys(CITY_COORDS).length;
+  var pct = Math.round(ITEMS.length / totalCities * 100);
+  var m = totalMileage(); var laps = m / 40075;
+  var fv = farthestVoyage();
+  var cells = [
+    ['世界城市图鉴', '已点亮 ' + pct + '%'],
+    ['旅行足迹', '超越约 ' + travelPercentile(ITEMS.length) + '% 的人 *'],
+    ['最远航程', fv ? (fv.name + ' · ' + commaNum(fv.km) + ' km') : '—'],
+    ['总里程', commaNum(m) + ' km' + (laps >= 0.1 ? ' ≈ 绕赤道 ' + laps.toFixed(1) + ' 圈' : '')]
+  ];
+  var gridY = 1592, cellH = 100, cellW = 456;
+  cells.forEach(function(cell, i){
+    var cx = (i % 2 === 0) ? (W/2 - 12 - cellW/2) : (W/2 + 12 + cellW/2);
+    var cy = gridY + Math.floor(i / 2) * cellH;
+    ctx.fillStyle = faint; ctx.font = '500 24px ' + zhFont;
+    ctx.fillText(cell[0], cx, cy);
+    ctx.fillStyle = ink; ctx.font = '600 32px ' + zhFont;
+    ctx.fillText(cell[1], cx, cy + 40);
+  });
+  ctx.fillStyle = faint; ctx.font = '400 20px ' + zhFont;
+  ctx.textAlign = 'left';
+  ctx.fillText('* 基于公开旅行统计估算', 66, 1856);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = muted; ctx.font = '500 30px ' + zhFont;
+  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1846);
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = makeNoisePattern(ctx, serif ? 14 : 7);
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
   var now = new Date();
-  var dtxt = '制图 · ' + now.getFullYear() + '.' + ('0' + (now.getMonth() + 1)).slice(-2) + '.' + ('0' + now.getDate()).slice(-2);
-  ctx.fillStyle = muted; ctx.font = '400 30px ' + zhFont;
-  ctx.fillText(dtxt, W/2, 1732);
-  // 水印(+账号钩子)
-  ctx.fillStyle = muted;
-  ctx.font = '500 32px ' + zhFont;
-  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1828);
+  var mm = ('0' + (now.getMonth() + 1)).slice(-2), dd = ('0' + now.getDate()).slice(-2);
+  drawAgedSeal(ctx, 906, 1748, 84, '我的旅行地球 · TRAVEL GLOBE', '' + now.getFullYear(), mm + '.' + dd + ' 制图');
   return o;
 }
 function exportGlobeImage(){
@@ -2835,6 +2978,7 @@ def build(photo_dir: Path) -> Tuple[int, int]:
     city_coords = build_city_coords()
     # 导出合并后的坐标表,供入口页(create.html)做完整城市候选
     coords_json = json.dumps(city_coords, ensure_ascii=False, separators=(",", ":"))
+    tags_json = json.dumps(build_city_tags(), ensure_ascii=False, separators=(",", ":"))
     (ROOT / "persona-core" / "city_coords.json").write_text(coords_json, encoding="utf-8")
 
     def render(items: List[Dict[str, object]], dots=None, title: str = "我的旅行地球 · Travel Globe",
@@ -2844,6 +2988,7 @@ def build(photo_dir: Path) -> Tuple[int, int]:
             HTML.replace("@@THREE@@", three_js)
             .replace("@@ITEMS@@", json.dumps(items, ensure_ascii=False, separators=(",", ":")))
             .replace("@@CITY_COORDS@@", coords_json)
+            .replace("@@CITY_TAGS@@", tags_json)
             .replace("@@VINTAGE_MAP_URL@@", json.dumps(vintage_map_url, separators=(",", ":")))
             .replace("@@BLACK_MARBLE_URL@@", json.dumps(black_marble_url, separators=(",", ":")))
             .replace("@@COAST_LINES@@", json.dumps(coast_lines, separators=(",", ":")))

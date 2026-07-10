@@ -153,6 +153,7 @@ function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"f
 <script>
 var DEMO_ITEMS = [];
 var CITY_COORDS = {"北京":{"lat":39.9,"lon":116.41,"country":"中国"},"上海":{"lat":31.23,"lon":121.47,"country":"中国"},"广州":{"lat":23.13,"lon":113.26,"country":"中国"},"深圳":{"lat":22.54,"lon":114.06,"country":"中国"},"成都":{"lat":30.57,"lon":104.07,"country":"中国"},"重庆":{"lat":29.56,"lon":106.55,"country":"中国"},"长沙":{"lat":28.23,"lon":112.94,"country":"中国"},"西安":{"lat":34.34,"lon":108.94,"country":"中国"},"杭州":{"lat":30.27,"lon":120.15,"country":"中国"},"苏州":{"lat":31.3,"lon":120.58,"country":"中国"},"南京":{"lat":32.06,"lon":118.8,"country":"中国"},"厦门":{"lat":24.48,"lon":118.09,"country":"中国"},"三亚":{"lat":18.25,"lon":109.51,"country":"中国"},"大理":{"lat":25.61,"lon":100.27,"country":"中国"},"丽江":{"lat":26.87,"lon":100.23,"country":"中国"},"青岛":{"lat":36.07,"lon":120.38,"country":"中国"},"稻城亚丁":{"lat":28.39,"lon":100.33,"country":"中国"},"敦煌":{"lat":40.14,"lon":94.66,"country":"中国"},"喀什":{"lat":39.47,"lon":75.99,"country":"中国"},"拉萨":{"lat":29.65,"lon":91.14,"country":"中国"},"潮汕":{"lat":23.35,"lon":116.68,"country":"中国"},"哈尔滨":{"lat":45.8,"lon":126.53,"country":"中国"},"莫干山":{"lat":30.61,"lon":119.88,"country":"中国"},"乌镇":{"lat":30.74,"lon":120.49,"country":"中国"},"桂林阳朔":{"lat":25.27,"lon":110.29,"country":"中国"},"张家界":{"lat":29.12,"lon":110.48,"country":"中国"},"香港":{"lat":22.32,"lon":114.17,"country":"中国香港"},"澳门":{"lat":22.2,"lon":113.54,"country":"中国澳门"},"台北":{"lat":25.03,"lon":121.56,"country":"中国台湾"},"花莲":{"lat":23.99,"lon":121.6,"country":"中国台湾"},"东京":{"lat":35.68,"lon":139.69,"country":"日本"},"大阪":{"lat":34.69,"lon":135.5,"country":"日本"},"京都":{"lat":35.01,"lon":135.77,"country":"日本"},"北海道":{"lat":43.06,"lon":141.35,"country":"日韩"},"冲绳":{"lat":26.21,"lon":127.68,"country":"日本"},"首尔":{"lat":37.57,"lon":126.98,"country":"韩国"},"釜山":{"lat":35.18,"lon":129.08,"country":"韩国"},"巴厘岛":{"lat":-8.34,"lon":115.09,"country":"印尼"},"曼谷":{"lat":13.76,"lon":100.5,"country":"泰国"},"清迈":{"lat":18.79,"lon":98.98,"country":"泰国"},"普吉岛":{"lat":7.88,"lon":98.39,"country":"泰国"},"新加坡":{"lat":1.35,"lon":103.82,"country":"新加坡"},"吉隆坡":{"lat":3.14,"lon":101.69,"country":"马来西亚"},"会安":{"lat":15.88,"lon":108.33,"country":"东南亚"},"仙本那":{"lat":4.48,"lon":118.62,"country":"东南亚"},"巴黎":{"lat":48.86,"lon":2.35,"country":"法国"},"伦敦":{"lat":51.51,"lon":-0.13,"country":"英国"},"罗马":{"lat":41.9,"lon":12.5,"country":"意大利"},"巴塞罗那":{"lat":41.39,"lon":2.17,"country":"西班牙"},"圣托里尼":{"lat":36.39,"lon":25.46,"country":"希腊"},"因特拉肯":{"lat":46.69,"lon":7.85,"country":"瑞士"},"冰岛":{"lat":64.15,"lon":-21.94,"country":"欧美澳新"},"纽约":{"lat":40.71,"lon":-74.01,"country":"美国"},"洛杉矶":{"lat":34.05,"lon":-118.24,"country":"美国"},"悉尼":{"lat":-33.87,"lon":151.21,"country":"澳大利亚"},"皇后镇":{"lat":-45.03,"lon":168.66,"country":"新西兰"},"迪拜":{"lat":25.2,"lon":55.27,"country":"阿联酋"},"开罗":{"lat":30.04,"lon":31.24,"country":"埃及"},"马拉喀什":{"lat":31.63,"lon":-7.99,"country":"摩洛哥"},"伊斯坦布尔":{"lat":41.01,"lon":28.98,"country":"土耳其"},"马尔代夫":{"lat":3.2,"lon":73.22,"country":"其他"},"武汉":{"lat":30.59,"lon":114.3,"country":"中国"},"天津":{"lat":39.13,"lon":117.2,"country":"中国"},"昆明":{"lat":25.04,"lon":102.71,"country":"中国"},"贵阳":{"lat":26.65,"lon":106.63,"country":"中国"},"南宁":{"lat":22.82,"lon":108.32,"country":"中国"},"福州":{"lat":26.07,"lon":119.3,"country":"中国"},"泉州":{"lat":24.87,"lon":118.68,"country":"中国"},"郑州":{"lat":34.75,"lon":113.62,"country":"中国"},"洛阳":{"lat":34.62,"lon":112.45,"country":"中国"},"济南":{"lat":36.65,"lon":117.12,"country":"中国"},"青海湖":{"lat":36.89,"lon":100.18,"country":"中国"},"张掖":{"lat":38.93,"lon":100.45,"country":"中国"},"九寨沟":{"lat":33.26,"lon":103.92,"country":"中国"},"黄山":{"lat":30.13,"lon":118.16,"country":"中国"},"香格里拉":{"lat":27.83,"lon":99.71,"country":"中国"},"泸沽湖":{"lat":27.7,"lon":100.79,"country":"中国"},"婺源":{"lat":29.25,"lon":117.86,"country":"中国"},"平遥":{"lat":37.2,"lon":112.18,"country":"中国"},"凤凰古城":{"lat":27.95,"lon":109.6,"country":"中国"},"千岛湖":{"lat":29.61,"lon":119.04,"country":"中国"},"西塘":{"lat":30.94,"lon":120.89,"country":"中国"},"扬州":{"lat":32.39,"lon":119.41,"country":"中国"},"无锡":{"lat":31.49,"lon":120.31,"country":"中国"},"宁波":{"lat":29.87,"lon":121.55,"country":"中国"},"珠海":{"lat":22.27,"lon":113.58,"country":"中国"},"北戴河":{"lat":39.83,"lon":119.48,"country":"中国"},"威海":{"lat":37.51,"lon":122.12,"country":"中国"},"呼伦贝尔":{"lat":49.21,"lon":119.77,"country":"中国"},"喀纳斯":{"lat":48.69,"lon":87.45,"country":"中国"},"武夷山":{"lat":27.76,"lon":118.03,"country":"中国"},"河内":{"lat":21.03,"lon":105.85,"country":"越南"},"岘港":{"lat":16.05,"lon":108.22,"country":"越南"},"芽庄":{"lat":12.24,"lon":109.19,"country":"东南亚"},"暹粒吴哥":{"lat":13.41,"lon":103.87,"country":"东南亚"},"长滩岛":{"lat":11.97,"lon":121.92,"country":"菲律宾"},"沙巴":{"lat":5.98,"lon":116.07,"country":"东南亚"},"济州岛":{"lat":33.49,"lon":126.53,"country":"韩国"},"奈良":{"lat":34.69,"lon":135.81,"country":"日韩"},"镰仓":{"lat":35.32,"lon":139.55,"country":"日韩"},"福冈":{"lat":33.59,"lon":130.4,"country":"日本"},"维也纳":{"lat":48.21,"lon":16.37,"country":"奥地利"},"布拉格":{"lat":50.08,"lon":14.44,"country":"捷克"},"阿姆斯特丹":{"lat":52.37,"lon":4.9,"country":"荷兰"},"雅典":{"lat":37.98,"lon":23.73,"country":"希腊"},"夏威夷":{"lat":21.31,"lon":-157.86,"country":"欧美澳新"},"墨西哥城":{"lat":19.43,"lon":-99.13,"country":"墨西哥"},"马丘比丘":{"lat":-13.16,"lon":-72.55,"country":"其他"},"内罗毕":{"lat":-1.29,"lon":36.82,"country":"肯尼亚"},"开普敦":{"lat":-33.9249,"lon":18.4241,"country":"南非"},"里约热内卢":{"lat":-22.9068,"lon":-43.1729,"country":"巴西"},"雷克雅未克":{"lat":64.1466,"lon":-21.9426,"country":"冰岛"},"名古屋":{"lat":35.18,"lon":136.91,"country":"日本"},"札幌":{"lat":43.06,"lon":141.35,"country":"日本"},"雅加达":{"lat":-6.21,"lon":106.85,"country":"印尼"},"胡志明市":{"lat":10.82,"lon":106.63,"country":"越南"},"暹粒":{"lat":13.36,"lon":103.86,"country":"柬埔寨"},"马尼拉":{"lat":14.6,"lon":120.98,"country":"菲律宾"},"新德里":{"lat":28.61,"lon":77.21,"country":"印度"},"孟买":{"lat":19.08,"lon":72.88,"country":"印度"},"加德满都":{"lat":27.72,"lon":85.32,"country":"尼泊尔"},"马累":{"lat":4.18,"lon":73.51,"country":"马尔代夫"},"阿布扎比":{"lat":24.45,"lon":54.38,"country":"阿联酋"},"多哈":{"lat":25.29,"lon":51.53,"country":"卡塔尔"},"特拉维夫":{"lat":32.08,"lon":34.78,"country":"以色列"},"尼斯":{"lat":43.7,"lon":7.27,"country":"法国"},"爱丁堡":{"lat":55.95,"lon":-3.19,"country":"英国"},"米兰":{"lat":45.46,"lon":9.19,"country":"意大利"},"威尼斯":{"lat":45.44,"lon":12.32,"country":"意大利"},"佛罗伦萨":{"lat":43.77,"lon":11.26,"country":"意大利"},"马德里":{"lat":40.42,"lon":-3.7,"country":"西班牙"},"柏林":{"lat":52.52,"lon":13.4,"country":"德国"},"慕尼黑":{"lat":48.14,"lon":11.58,"country":"德国"},"苏黎世":{"lat":47.38,"lon":8.54,"country":"瑞士"},"里斯本":{"lat":38.72,"lon":-9.14,"country":"葡萄牙"},"布达佩斯":{"lat":47.5,"lon":19.04,"country":"匈牙利"},"哥本哈根":{"lat":55.68,"lon":12.57,"country":"丹麦"},"斯德哥尔摩":{"lat":59.33,"lon":18.07,"country":"瑞典"},"赫尔辛基":{"lat":60.17,"lon":24.94,"country":"芬兰"},"都柏林":{"lat":53.35,"lon":-6.26,"country":"爱尔兰"},"莫斯科":{"lat":55.76,"lon":37.62,"country":"俄罗斯"},"圣彼得堡":{"lat":59.93,"lon":30.34,"country":"俄罗斯"},"旧金山":{"lat":37.77,"lon":-122.42,"country":"美国"},"西雅图":{"lat":47.61,"lon":-122.33,"country":"美国"},"芝加哥":{"lat":41.88,"lon":-87.63,"country":"美国"},"拉斯维加斯":{"lat":36.17,"lon":-115.14,"country":"美国"},"波士顿":{"lat":42.36,"lon":-71.06,"country":"美国"},"华盛顿":{"lat":38.91,"lon":-77.04,"country":"美国"},"迈阿密":{"lat":25.76,"lon":-80.19,"country":"美国"},"檀香山":{"lat":21.31,"lon":-157.86,"country":"美国"},"温哥华":{"lat":49.28,"lon":-123.12,"country":"加拿大"},"多伦多":{"lat":43.65,"lon":-79.38,"country":"加拿大"},"坎昆":{"lat":21.16,"lon":-86.85,"country":"墨西哥"},"圣保罗":{"lat":-23.55,"lon":-46.63,"country":"巴西"},"布宜诺斯艾利斯":{"lat":-34.6,"lon":-58.38,"country":"阿根廷"},"利马":{"lat":-12.05,"lon":-77.04,"country":"秘鲁"},"库斯科":{"lat":-13.53,"lon":-71.97,"country":"秘鲁"},"墨尔本":{"lat":-37.81,"lon":144.96,"country":"澳大利亚"},"奥克兰":{"lat":-36.85,"lon":174.76,"country":"新西兰"},"阿勒泰":{"lat":47.85,"lon":88.14,"country":"中国"},"伊宁":{"lat":43.92,"lon":81.28,"country":"中国"},"乌鲁木齐":{"lat":43.83,"lon":87.62,"country":"中国"},"景德镇":{"lat":29.27,"lon":117.18,"country":"中国"},"恩施":{"lat":30.27,"lon":109.49,"country":"中国"},"桂林":{"lat":25.27,"lon":110.29,"country":"中国"},"西双版纳":{"lat":22.01,"lon":100.8,"country":"中国"},"北海":{"lat":21.48,"lon":109.12,"country":"中国"},"延吉":{"lat":42.9,"lon":129.51,"country":"中国"},"淄博":{"lat":36.81,"lon":118.05,"country":"中国"},"天水":{"lat":34.58,"lon":105.72,"country":"中国"},"长白山":{"lat":42.02,"lon":128.06,"country":"中国"},"舟山":{"lat":29.99,"lon":122.21,"country":"中国"},"汕头":{"lat":23.35,"lon":116.68,"country":"中国"},"银川":{"lat":38.49,"lon":106.23,"country":"中国"},"西宁":{"lat":36.62,"lon":101.78,"country":"中国"},"兰州":{"lat":36.06,"lon":103.83,"country":"中国"},"太原":{"lat":37.87,"lon":112.55,"country":"中国"},"开封":{"lat":34.8,"lon":114.31,"country":"中国"},"大同":{"lat":40.08,"lon":113.3,"country":"中国"},"色达":{"lat":32.27,"lon":100.33,"country":"中国"},"茶卡盐湖":{"lat":36.7,"lon":99.09,"country":"中国"},"万宁":{"lat":18.8,"lon":110.4,"country":"中国"},"陵水":{"lat":18.51,"lon":110.04,"country":"中国"},"佛山":{"lat":23.02,"lon":113.12,"country":"中国"},"绍兴":{"lat":30.0,"lon":120.58,"country":"中国"},"温州":{"lat":28.0,"lon":120.7,"country":"中国"},"林芝":{"lat":29.65,"lon":94.36,"country":"中国"},"日喀则":{"lat":29.27,"lon":88.88,"country":"中国"},"漠河":{"lat":52.97,"lon":122.54,"country":"中国"},"满洲里":{"lat":49.6,"lon":117.38,"country":"中国"},"丹东":{"lat":40.13,"lon":124.38,"country":"中国"},"烟台":{"lat":37.46,"lon":121.45,"country":"中国"},"大连":{"lat":38.91,"lon":121.61,"country":"中国"},"秦皇岛":{"lat":39.94,"lon":119.6,"country":"中国"},"承德":{"lat":40.95,"lon":117.94,"country":"中国"}};
+var CITY_TAGS = {"北京":{"tags":["大都市","古城人文","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"上海":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"广州":{"tags":["大都市","美食之都"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"深圳":{"tags":["大都市","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"成都":{"tags":["大都市","美食之都","古城人文"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"重庆":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"长沙":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"西安":{"tags":["古城人文","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"杭州":{"tags":["大都市","自然山水","出片打卡"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"苏州":{"tags":["古城人文","自然山水"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"南京":{"tags":["大都市","古城人文"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"厦门":{"tags":["海岛海滨","度假松弛","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"三亚":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"大理":{"tags":["自然山水","度假松弛","小众秘境"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"丽江":{"tags":["古城人文","自然山水","度假松弛"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"青岛":{"tags":["海岛海滨","大都市","美食之都"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"稻城亚丁":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"敦煌":{"tags":["古城人文","小众秘境","自然山水"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"喀什":{"tags":["古城人文","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"拉萨":{"tags":["古城人文","自然山水","小众秘境"],"heat":"热门","travelCost":"长假远行","region":"中国大陆"},"潮汕":{"tags":["美食之都","古城人文"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"哈尔滨":{"tags":["大都市","出片打卡","古城人文"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"莫干山":{"tags":["自然山水","度假松弛"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"乌镇":{"tags":["古城人文","度假松弛"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"桂林阳朔":{"tags":["自然山水","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"张家界":{"tags":["自然山水","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"香港":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"港澳台"},"澳门":{"tags":["大都市","美食之都","度假松弛"],"heat":"热门","travelCost":"小长假友好","region":"港澳台"},"台北":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"港澳台"},"花莲":{"tags":["海岛海滨","自然山水"],"heat":"小众","travelCost":"长假远行","region":"港澳台"},"东京":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"日韩"},"大阪":{"tags":["大都市","美食之都"],"heat":"热门","travelCost":"小长假友好","region":"日韩"},"京都":{"tags":["古城人文","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"北海道":{"tags":["自然山水","度假松弛","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"冲绳":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"首尔":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"日韩"},"釜山":{"tags":["海岛海滨","大都市"],"heat":"热门","travelCost":"小长假友好","region":"日韩"},"巴厘岛":{"tags":["海岛海滨","度假松弛","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"曼谷":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"清迈":{"tags":["古城人文","度假松弛","小众秘境"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"普吉岛":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"新加坡":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"吉隆坡":{"tags":["大都市","美食之都"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"会安":{"tags":["古城人文","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"东南亚"},"仙本那":{"tags":["海岛海滨","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"东南亚"},"巴黎":{"tags":["大都市","古城人文","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"伦敦":{"tags":["大都市","古城人文"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"罗马":{"tags":["古城人文","美食之都","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"巴塞罗那":{"tags":["大都市","古城人文","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"圣托里尼":{"tags":["海岛海滨","度假松弛","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"因特拉肯":{"tags":["自然山水","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"冰岛":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"欧美澳新"},"纽约":{"tags":["大都市","美食之都","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"洛杉矶":{"tags":["大都市","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"悉尼":{"tags":["大都市","海岛海滨","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"皇后镇":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"欧美澳新"},"迪拜":{"tags":["大都市","度假松弛","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"其他"},"开罗":{"tags":["古城人文","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"其他"},"马拉喀什":{"tags":["古城人文","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"其他"},"伊斯坦布尔":{"tags":["古城人文","美食之都","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"其他"},"马尔代夫":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"其他"},"武汉":{"tags":["大都市","美食之都","古城人文"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"天津":{"tags":["大都市","古城人文","美食之都"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"昆明":{"tags":["大都市","自然山水"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"贵阳":{"tags":["大都市","自然山水","美食之都"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"南宁":{"tags":["大都市","美食之都","自然山水"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"福州":{"tags":["大都市","古城人文","美食之都"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"泉州":{"tags":["古城人文","美食之都","小众秘境"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"郑州":{"tags":["大都市","古城人文"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"洛阳":{"tags":["古城人文","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"济南":{"tags":["大都市","自然山水","古城人文"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"青海湖":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"中国大陆"},"张掖":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"九寨沟":{"tags":["自然山水","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"中国大陆"},"黄山":{"tags":["自然山水","出片打卡"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"香格里拉":{"tags":["自然山水","小众秘境","古城人文"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"泸沽湖":{"tags":["自然山水","小众秘境","度假松弛"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"婺源":{"tags":["自然山水","古城人文","出片打卡"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"平遥":{"tags":["古城人文","小众秘境"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"凤凰古城":{"tags":["古城人文","出片打卡","小众秘境"],"heat":"热门","travelCost":"小长假友好","region":"中国大陆"},"千岛湖":{"tags":["自然山水","度假松弛"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"西塘":{"tags":["古城人文","度假松弛"],"heat":"热门","travelCost":"周末友好","region":"中国大陆"},"扬州":{"tags":["古城人文","美食之都","自然山水"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"无锡":{"tags":["自然山水","古城人文"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"宁波":{"tags":["大都市","美食之都","海岛海滨"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"珠海":{"tags":["海岛海滨","大都市","度假松弛"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"北戴河":{"tags":["海岛海滨","度假松弛"],"heat":"小众","travelCost":"周末友好","region":"中国大陆"},"威海":{"tags":["海岛海滨","度假松弛","自然山水"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"呼伦贝尔":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"中国大陆"},"喀纳斯":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"中国大陆"},"武夷山":{"tags":["自然山水","小众秘境"],"heat":"小众","travelCost":"小长假友好","region":"中国大陆"},"河内":{"tags":["古城人文","美食之都","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"东南亚"},"岘港":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"芽庄":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"暹粒吴哥":{"tags":["古城人文","小众秘境","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"长滩岛":{"tags":["海岛海滨","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"东南亚"},"沙巴":{"tags":["海岛海滨","自然山水","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"东南亚"},"济州岛":{"tags":["海岛海滨","自然山水","度假松弛"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"奈良":{"tags":["古城人文","自然山水"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"镰仓":{"tags":["古城人文","海岛海滨","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"福冈":{"tags":["大都市","美食之都"],"heat":"热门","travelCost":"长假远行","region":"日韩"},"维也纳":{"tags":["大都市","古城人文"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"布拉格":{"tags":["古城人文","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"阿姆斯特丹":{"tags":["大都市","古城人文","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"雅典":{"tags":["古城人文","小众秘境"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"夏威夷":{"tags":["海岛海滨","度假松弛","出片打卡"],"heat":"热门","travelCost":"长假远行","region":"欧美澳新"},"墨西哥城":{"tags":["大都市","古城人文","美食之都","小众秘境"],"heat":"小众","travelCost":"长假远行","region":"其他"},"马丘比丘":{"tags":["古城人文","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"其他"},"内罗毕":{"tags":["自然山水","小众秘境","出片打卡"],"heat":"小众","travelCost":"长假远行","region":"其他"}};
 var FORCE_DEMO = false; // album 演示页锁定内置数据,不被 localStorage/URL 劫持
 (function(){ var b = document.getElementById('boot'); if (b) b.parentNode.removeChild(b); })();
 // 把城市名列表 join 成地球能吃的 item(无照片,运行时定位)
@@ -672,16 +673,119 @@ function totalMileage(){
 function commaNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 function hex6(c){ return '#' + ('000000' + c.toString(16)).slice(-6); }
 
-// 航海称号:按去过的城市数,给一个愿意认领的身份(分享卡的社交货币核心)
+// 航海称号五阶 + 晋升进度(等级钩子:差 X 城晋升)
+var RANKS = [[1,'启程者'],[4,'远航者'],[9,'环球旅人'],[16,'大航海家'],[26,'传奇航海家']];
 function voyageRank(n){
-  if (n >= 26) return '传奇航海家';
-  if (n >= 16) return '大航海家';
-  if (n >= 9)  return '环球旅人';
-  if (n >= 4)  return '远航者';
-  return '启程者';
+  var r = RANKS[0][1];
+  for (var i = 0; i < RANKS.length; i++) if (n >= RANKS[i][0]) r = RANKS[i][1];
+  return r;
+}
+function rankInfo(n){
+  var idx = 0;
+  for (var i = 0; i < RANKS.length; i++) if (n >= RANKS[i][0]) idx = i;
+  var next = idx < RANKS.length - 1 ? { name: RANKS[idx+1][1], need: RANKS[idx+1][0] - n } : null;
+  return { name: RANKS[idx][1], idx: idx, next: next };
 }
 
-// 竖屏分享图(1080×1920):装饰框 + 地球 + 旅行身份卡(称号/本命城/城数国数/里程·绕赤道/制图日期)
+// 超越百分比(预设分布,估算口径,卡上带 * 注)
+function travelPercentile(n){
+  var t = [[1,30],[2,42],[3,55],[5,68],[8,78],[12,86],[16,91],[20,94],[25,96],[30,97],[40,99]];
+  var p = t[0][1];
+  for (var i = 0; i < t.length; i++){
+    if (n >= t[i][0]) p = t[i][1];
+    else break;
+  }
+  return p;
+}
+
+// 最远航程:距本命城市最远的一座城
+function farthestVoyage(){
+  if (!HOME_PORT || !ITEMS.length) return null;
+  var best = null, bd = 0;
+  ITEMS.forEach(function(it){
+    if (it.place === HOME_PORT.name) return;
+    var d = haversine(HOME_PORT, it);
+    if (d > bd){ bd = d; best = it; }
+  });
+  return best ? { name: best.place, km: Math.round(bd) } : null;
+}
+
+// 旅行人格(persona-core 判定引擎的纯城市信号版:无答题,权重同源)
+function personaFromCities(){
+  var tagged = [];
+  ITEMS.forEach(function(it){ var t = CITY_TAGS[it.place]; if (t) tagged.push(t); });
+  var n = tagged.length;
+  if (n < 3) return null;
+  function ratio(pred){ return tagged.filter(pred).length / n; }
+  var tagR = function(tag){ return ratio(function(c){ return (c.tags || []).indexOf(tag) >= 0; }); };
+  var heatR = function(h){ return ratio(function(c){ return c.heat === h; }); };
+  var costR = function(t){ return ratio(function(c){ return c.travelCost === t; }); };
+  var spread = {}; tagged.forEach(function(c){ if (c.region) spread[c.region] = 1; });
+  var rs = Object.keys(spread).length;
+  var sc = {};
+  sc['松弛感本人']     = 1.0 * tagR('度假松弛') + .8 * tagR('海岛海滨');
+  sc['特种兵旅人']     = .5 * Math.min(1, n / 6) + .5 * Math.min(1, (rs - 1) / 3);
+  sc['citywalk 漫游家'] = 1.0 * tagR('大都市');
+  sc['反向旅游选手']   = 1.0 * tagR('小众秘境') + .8 * heatR('小众');
+  sc['老城散步派']     = 1.1 * tagR('古城人文');
+  sc['为了一口吃的']   = 1.2 * tagR('美食之都');
+  sc['出片型人格']     = 1.0 * tagR('出片打卡') + .5 * heatR('热门');
+  sc['周末治愈系']     = .9 * costR('周末友好') + .5 * tagR('自然山水') + .4 * tagR('度假松弛') + (n <= 3 ? .25 : 0);
+  var PRI = ['反向旅游选手','为了一口吃的','老城散步派','特种兵旅人','周末治愈系','citywalk 漫游家','出片型人格','松弛感本人'];
+  var best = null, bs = -1;
+  PRI.forEach(function(t){ if (sc[t] > bs + 1e-9){ bs = sc[t]; best = t; } });
+  return best;
+}
+
+// 纸纹噪点 pattern(128 离屏平铺,勿逐像素画全图)
+function makeNoisePattern(ctx, alpha){
+  var c = document.createElement('canvas'); c.width = 128; c.height = 128;
+  var x = c.getContext('2d');
+  var img = x.createImageData(128, 128);
+  for (var i = 0; i < img.data.length; i += 4){
+    var v = Math.floor(Math.random() * 255);
+    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v;
+    img.data[i+3] = Math.floor(alpha * (0.5 + Math.random() * 0.5));
+  }
+  x.putImageData(img, 0, 0);
+  return ctx.createPattern(c, 'repeat');
+}
+
+// 做旧圆章:双环 + 环形文字 + 中心文字,随机戳孔 + 微旋转
+function drawAgedSeal(ctx, cx, cy, r, ringText, line1, line2){
+  var c = document.createElement('canvas'); c.width = c.height = r * 2 + 20;
+  var x = c.getContext('2d');
+  var o = r + 10;
+  x.strokeStyle = '#b13a2a'; x.fillStyle = '#b13a2a';
+  x.lineWidth = 5; x.beginPath(); x.arc(o, o, r - 3, 0, Math.PI * 2); x.stroke();
+  x.lineWidth = 1.6; x.beginPath(); x.arc(o, o, r - 13, 0, Math.PI * 2); x.stroke();
+  x.font = '700 ' + Math.round(r * .17) + 'px "Microsoft YaHei", serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  var chars = ringText.split('');
+  var arc = Math.PI * 1.5, a0 = -Math.PI / 2 - arc / 2;
+  chars.forEach(function(ch, i){
+    var a = a0 + arc * (i + .5) / chars.length;
+    x.save(); x.translate(o + Math.sin(a) * (r - 26), o - Math.cos(a) * (r - 26));
+    x.rotate(a); x.fillText(ch, 0, 0); x.restore();
+  });
+  x.font = '700 ' + Math.round(r * .26) + 'px "Microsoft YaHei", serif';
+  x.fillText(line1, o, o - r * .10);
+  x.font = '600 ' + Math.round(r * .17) + 'px "Microsoft YaHei", serif';
+  x.fillText(line2, o, o + r * .24);
+  x.font = Math.round(r * .2) + 'px serif';
+  x.fillText('✦', o, o + r * .58);
+  x.globalCompositeOperation = 'destination-out';
+  for (var k = 0; k < 46; k++){
+    var aa = Math.random() * Math.PI * 2, rr = Math.random() * r;
+    x.beginPath(); x.arc(o + Math.cos(aa) * rr, o + Math.sin(aa) * rr, .8 + Math.random() * 2.6, 0, Math.PI * 2); x.fill();
+  }
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(-.07); ctx.globalAlpha = .88;
+  ctx.drawImage(c, -o, -o);
+  ctx.restore();
+}
+
+// 竖屏分享卡 v3(1080×1920):称号+晋升刻度 / 人格 / 地球 / 主数字 / 2×2 数据格 / 做旧印章 / 纸纹
 function buildExportCanvas(){
   if (intro.active) completeIntro(false);
   rotX = targetRotX; rotY = targetRotY; radius = targetRadius;
@@ -690,23 +794,22 @@ function buildExportCanvas(){
   var bgHex = hex6(THEMES[currentTheme].bg);
   var ink = currentTheme === 'night' ? '#dff1ff' : (currentTheme === 'data' ? '#a7f0e6' : '#f0e3c0');
   var gold = currentTheme === 'night' ? '#ffe08a' : (currentTheme === 'data' ? '#7ef7d4' : '#d6a957');
-  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(222,203,164,.7)');
+  var muted = currentTheme === 'night' ? 'rgba(190,220,245,.72)' : (currentTheme === 'data' ? 'rgba(150,230,222,.72)' : 'rgba(222,203,164,.72)');
+  var faint = currentTheme === 'night' ? 'rgba(190,220,245,.45)' : (currentTheme === 'data' ? 'rgba(150,230,222,.45)' : 'rgba(222,203,164,.45)');
   var frameCol = currentTheme === 'night' ? 'rgba(122,216,255,.42)' : (currentTheme === 'data' ? 'rgba(55,214,255,.42)' : 'rgba(214,169,87,.5)');
-  var zhFont = serif ? '"Microsoft YaHei", Georgia, serif' : '"Microsoft YaHei", "Segoe UI", Arial';
+  var zhFont = '"Microsoft YaHei", ' + (serif ? 'Georgia, serif' : '"Segoe UI", Arial');
   var W = 1080, H = 1920;
   var o = document.createElement('canvas'); o.width = W; o.height = H;
   var ctx = o.getContext('2d');
   ctx.fillStyle = bgHex; ctx.fillRect(0, 0, W, H);
-  // 轻微暗角,聚焦中心
   var vg = ctx.createRadialGradient(W/2, H/2, H*.30, W/2, H/2, H*.72);
   vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.34)');
   ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
-  // 地球:内嵌构图(不顶到边),上下渐隐融入底色
   var gl = document.getElementById('gl');
   var glw = gl.width || 1, glh = gl.height || 1;
   var side = Math.min(glw, glh);
   var sx = (glw - side) / 2, sy = (glh - side) / 2;
-  var gX = 54, gW = W - 108, gTop = 258;
+  var gX = 54, gW = W - 108, gTop = 330;
   try { ctx.drawImage(gl, sx, sy, side, side, gX, gTop, gW, gW); } catch (e) {}
   var fade = ctx.createLinearGradient(0, gTop + gW - 300, 0, gTop + gW + 30);
   fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, bgHex);
@@ -714,11 +817,9 @@ function buildExportCanvas(){
   var topf = ctx.createLinearGradient(0, gTop, 0, gTop + 150);
   topf.addColorStop(0, bgHex); topf.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = topf; ctx.fillRect(gX, gTop, gW, 150);
-  // 装饰细框(双线 + 角饰),盖在最外圈
   ctx.strokeStyle = frameCol; ctx.lineWidth = 3;
   ctx.strokeRect(36, 36, W - 72, H - 72);
-  ctx.lineWidth = 1;
-  ctx.strokeRect(50, 50, W - 100, H - 100);
+  ctx.lineWidth = 1; ctx.strokeRect(50, 50, W - 100, H - 100);
   ctx.lineWidth = 3;
   [[36,36,1,1],[W-36,36,-1,1],[36,H-36,1,-1],[W-36,H-36,-1,-1]].forEach(function(c){
     ctx.beginPath();
@@ -726,51 +827,74 @@ function buildExportCanvas(){
     ctx.stroke();
   });
   ctx.textAlign = 'center';
-  // 标题 + 两侧饰线
   ctx.fillStyle = ink;
-  ctx.font = '700 64px ' + zhFont;
+  ctx.font = '700 58px ' + zhFont;
   var titleTxt = PAGE_TITLE || '我的旅行地球';
-  ctx.fillText(titleTxt, W/2, 148);
+  ctx.fillText(titleTxt, W/2, 132);
   var tw = ctx.measureText(titleTxt).width;
   ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(W/2 - tw/2 - 130, 128); ctx.lineTo(W/2 - tw/2 - 34, 128); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(W/2 + tw/2 + 34, 128);  ctx.lineTo(W/2 + tw/2 + 130, 128); ctx.stroke();
-  // 称号(社交货币):细框小徽章
-  var rank = voyageRank(ITEMS.length);
-  ctx.font = '600 36px ' + zhFont;
-  var rtxt = '「 ' + rank + ' 」';
-  ctx.fillStyle = gold;
-  ctx.fillText(rtxt, W/2, 218);
-  // ★ 本命城市
-  ctx.fillStyle = gold;
-  ctx.font = '600 40px ' + zhFont;
+  ctx.beginPath(); ctx.moveTo(W/2 - tw/2 - 120, 112); ctx.lineTo(W/2 - tw/2 - 30, 112); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(W/2 + tw/2 + 30, 112);  ctx.lineTo(W/2 + tw/2 + 120, 112); ctx.stroke();
+  var ri = rankInfo(ITEMS.length);
+  ctx.fillStyle = gold; ctx.font = '700 42px ' + zhFont;
+  ctx.fillText('「 ' + ri.name + ' 」', W/2, 206);
+  var persona = personaFromCities();
+  if (persona){
+    ctx.fillStyle = muted; ctx.font = '500 28px ' + zhFont;
+    ctx.fillText('旅行人格 · ' + persona, W/2, 254);
+  }
+  var scY = persona ? 296 : 268;
+  var scW = 260, scX0 = W/2 - scW/2;
+  ctx.strokeStyle = faint; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(scX0, scY); ctx.lineTo(scX0 + scW, scY); ctx.stroke();
+  for (var d = 0; d < 5; d++){
+    var dx = scX0 + scW * d / 4;
+    ctx.save(); ctx.translate(dx, scY); ctx.rotate(Math.PI / 4);
+    if (d <= ri.idx){ ctx.fillStyle = gold; ctx.fillRect(-7, -7, 14, 14); }
+    else { ctx.strokeStyle = faint; ctx.lineWidth = 2; ctx.strokeRect(-7, -7, 14, 14); }
+    ctx.restore();
+  }
+  if (ri.next){
+    ctx.fillStyle = faint; ctx.font = '400 24px ' + zhFont;
+    ctx.fillText('再点亮 ' + ri.next.need + ' 城,晋升「' + ri.next.name + '」', W/2, scY + 42);
+  }
+  ctx.fillStyle = gold; ctx.font = '600 38px ' + zhFont;
   if (HOME_PORT) ctx.fillText('★ 本命城市 · ' + HOME_PORT.name, W/2, 1392);
-  // 主数字
-  ctx.fillStyle = ink;
-  ctx.font = '700 88px ' + zhFont;
-  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1516);
-  // 里程 + 绕赤道换算
-  var m = totalMileage();
-  var laps = m / 40075;
-  var mtxt = '总里程约 ' + commaNum(m) + ' km' + (laps >= 0.1 ? ' · 约绕赤道 ' + laps.toFixed(1) + ' 圈' : '');
-  ctx.fillStyle = muted;
-  ctx.font = '500 40px ' + zhFont;
-  ctx.fillText(mtxt, W/2, 1594);
-  // 分隔饰线 ── ✦ ──
-  ctx.strokeStyle = frameCol; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(W/2 - 150, 1668); ctx.lineTo(W/2 - 26, 1668); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(W/2 + 26, 1668);  ctx.lineTo(W/2 + 150, 1668); ctx.stroke();
-  ctx.fillStyle = gold; ctx.font = '24px ' + zhFont;
-  ctx.fillText('✦', W/2, 1677);
-  // 制图日期(真实感)
+  ctx.fillStyle = ink; ctx.font = '700 86px ' + zhFont;
+  ctx.fillText(ITEMS.length + ' 城 · ' + distinctCountries() + ' 国/地区', W/2, 1512);
+  var totalCities = Object.keys(CITY_COORDS).length;
+  var pct = Math.round(ITEMS.length / totalCities * 100);
+  var m = totalMileage(); var laps = m / 40075;
+  var fv = farthestVoyage();
+  var cells = [
+    ['世界城市图鉴', '已点亮 ' + pct + '%'],
+    ['旅行足迹', '超越约 ' + travelPercentile(ITEMS.length) + '% 的人 *'],
+    ['最远航程', fv ? (fv.name + ' · ' + commaNum(fv.km) + ' km') : '—'],
+    ['总里程', commaNum(m) + ' km' + (laps >= 0.1 ? ' ≈ 绕赤道 ' + laps.toFixed(1) + ' 圈' : '')]
+  ];
+  var gridY = 1592, cellH = 100, cellW = 456;
+  cells.forEach(function(cell, i){
+    var cx = (i % 2 === 0) ? (W/2 - 12 - cellW/2) : (W/2 + 12 + cellW/2);
+    var cy = gridY + Math.floor(i / 2) * cellH;
+    ctx.fillStyle = faint; ctx.font = '500 24px ' + zhFont;
+    ctx.fillText(cell[0], cx, cy);
+    ctx.fillStyle = ink; ctx.font = '600 32px ' + zhFont;
+    ctx.fillText(cell[1], cx, cy + 40);
+  });
+  ctx.fillStyle = faint; ctx.font = '400 20px ' + zhFont;
+  ctx.textAlign = 'left';
+  ctx.fillText('* 基于公开旅行统计估算', 66, 1856);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = muted; ctx.font = '500 30px ' + zhFont;
+  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1846);
+  ctx.save();
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.fillStyle = makeNoisePattern(ctx, serif ? 14 : 7);
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
   var now = new Date();
-  var dtxt = '制图 · ' + now.getFullYear() + '.' + ('0' + (now.getMonth() + 1)).slice(-2) + '.' + ('0' + now.getDate()).slice(-2);
-  ctx.fillStyle = muted; ctx.font = '400 30px ' + zhFont;
-  ctx.fillText(dtxt, W/2, 1732);
-  // 水印(+账号钩子)
-  ctx.fillStyle = muted;
-  ctx.font = '500 32px ' + zhFont;
-  ctx.fillText('✦ 我的旅行地球' + (BY_HANDLE ? ' · ' + BY_HANDLE : ''), W/2, 1828);
+  var mm = ('0' + (now.getMonth() + 1)).slice(-2), dd = ('0' + now.getDate()).slice(-2);
+  drawAgedSeal(ctx, 906, 1748, 84, '我的旅行地球 · TRAVEL GLOBE', '' + now.getFullYear(), mm + '.' + dd + ' 制图');
   return o;
 }
 function exportGlobeImage(){
